@@ -1,0 +1,6 @@
+@Autik.API_HostAddress = http://localhost:5159
+
+GET {{Autik.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
