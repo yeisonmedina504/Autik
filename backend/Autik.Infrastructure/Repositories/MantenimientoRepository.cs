@@ -18,4 +18,13 @@ public class MantenimientoRepository: IMantenimientoRepository
     {
         return await _context.mantenimientos.ToListAsync();
     }
+    
+    public async Task<Mantenimiento> AddAsync(Mantenimiento mantenimiento)
+    {
+        await _context.mantenimientos.AddAsync(mantenimiento);
+        
+        await _context.SaveChangesAsync();
+
+        return mantenimiento;
+    }
 }

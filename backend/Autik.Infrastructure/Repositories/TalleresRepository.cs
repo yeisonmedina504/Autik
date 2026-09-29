@@ -17,4 +17,13 @@ public class TalleresRepository: ITallerRepository
     {
         return await _context.talleres.ToListAsync();
     }
+    
+    public async Task<Taller> AddAsync(Taller talleres)
+    {
+        await _context.talleres.AddAsync(talleres);
+        
+        await _context.SaveChangesAsync();
+
+        return talleres;
+    }
 }

@@ -18,4 +18,13 @@ public class VehiculoRepository:  IVehiculoRepository
     {
         return await _context.vehiculos.ToListAsync();
     }
+
+    public async Task<Vehiculo> AddAsync(Vehiculo vehiculo)
+    {
+        await _context.vehiculos.AddAsync(vehiculo);
+        
+        await _context.SaveChangesAsync();
+
+        return vehiculo;
+    }
 }
