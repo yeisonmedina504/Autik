@@ -31,7 +31,7 @@ public class TallerController:ControllerBase
             return BadRequest("El nombre del taller es obligatorio");
         }
         
-        var nuevoTaller = _repository.AddAsync(taller);
+        var nuevoTaller = await _repository.AddAsync(taller);
         
         return CreatedAtAction(nameof(getTalleres), new { id = nuevoTaller.Id }, nuevoTaller);
     }

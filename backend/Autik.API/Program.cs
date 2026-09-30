@@ -1,11 +1,10 @@
 using DotNetEnv;
 using Autik.Infrastructure;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+
 Env.Load();
 
 var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__PostgresConnection") 
@@ -15,6 +14,9 @@ var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__Po
 // Llamamos al método que inyecta los repositorios y la base de datos
 builder.Services.AddInfrastructure(connectionString);
 builder.Services.AddControllers();
+// Add services to the container.
+// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddOpenApi();
 
 
 
@@ -24,9 +26,13 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    //genera el documento json con el contrato de la api
     app.MapOpenApi();
+    
+    //levanta la interfaz grafica moderna consumiendo ese json
+    app.MapScalarApiReference();
 }
 
-app.UseHttpsRedirection();
+
 app.MapControllers();
 app.Run();

@@ -17,7 +17,7 @@ public class MantenimientoController: ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetMantenimientos()
     {
-        var mantenimientos = _repository.GetAllAsync();
+        var mantenimientos = await _repository.GetAllAsync();
         return Ok(mantenimientos);
     }
 
@@ -29,7 +29,7 @@ public class MantenimientoController: ControllerBase
             return BadRequest("La marc y modelo son obligatorias");
         }
         
-        var nuevoMantenimiento = _repository.AddAsync(mantenimiento);
+        var nuevoMantenimiento = await _repository.AddAsync(mantenimiento);
         
         return CreatedAtAction(nameof(GetMantenimientos),  new { id = nuevoMantenimiento.Id }, nuevoMantenimiento);
     }

@@ -21,7 +21,7 @@ public class VehiculoController:ControllerBase
     [HttpGet]
     public async Task<IActionResult> getVehiculos()
     {
-        var vehiculos = _repository.GetAllAsync();
+        var vehiculos = await _repository.GetAllAsync();
         return Ok(vehiculos);
     }
 
