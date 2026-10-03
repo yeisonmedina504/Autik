@@ -1,6 +1,7 @@
 using DotNetEnv;
 using Autik.Infrastructure;
 using Scalar.AspNetCore;
+using Autik.Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,7 @@ var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__Po
                        ?? throw new InvalidOperationException("Falta la cadena de conexión.");
 
 
+builder.Services.AddApplication();
 // Llamamos al método que inyecta los repositorios y la base de datos
 builder.Services.AddInfrastructure(connectionString);
 builder.Services.AddControllers();
