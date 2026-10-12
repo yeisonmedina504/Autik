@@ -32,7 +32,6 @@ public class TallerController:ControllerBase
         }
         
         var nuevoTaller = await _repository.AddAsync(taller);
-        
         return CreatedAtAction(nameof(getTalleres), new { id = nuevoTaller.Id }, nuevoTaller);
     }
     

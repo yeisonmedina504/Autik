@@ -1,9 +1,11 @@
-### 1. Obtener todos los hábitos (Prueba del Verbo GET)
+##VEHICULOS
+
+### 1. Obtener todos los vehiculos (Prueba del Verbo GET)
 # Nota: Cambia el puerto 5157 por el puerto real que te arroje la terminal
 GET http://localhost:5159/api/Vehiculo
 Accept: application/json
 
-### 2. Crear un nuevo hábito (Prueba del Verbo POST)
+### 2. Crear un nuevo vehiculo (Prueba del Verbo POST)
 POST http://localhost:5159/api/Vehiculo
 Content-Type: application/json
 
@@ -16,3 +18,68 @@ Content-Type: application/json
   "descripcion": "Vehiculo ciudad",
   "costo": 150000
 }
+
+###MANTENIMIENTOS
+
+
+# curl http://localhost:5159/api/Mantenimiento             getall
+GET http://localhost:5159/api/Mantenimiento
+
+###
+
+# curl http://localhost:5159/api/Mantenimiento/1           getbyid
+GET http://localhost:5159/api/Mantenimiento/1
+
+###
+
+# curl http://localhost:5159/api/Mantenimiento 
+#  --request POST 
+#  --header 'Content-Type: application/json' 
+#  --data '{
+#  "tipo": "",
+#  "marcaModelo": "",
+#  "placa": "",
+#  "anio": null
+#}'
+POST http://localhost:5159/api/Mantenimiento
+Content-Type: application/json
+
+{
+  "tipo": "",
+  "marcaModelo": "",
+  "placa": "",
+  "anio": null
+}
+
+###
+
+# curl http://localhost:5159/api/Mantenimiento/1 
+#  --request PUT 
+#  --header 'Content-Type: application/json' 
+#  --data '{
+#  "id": 1,
+#  "tipo": "",
+#  "marcaModelo": "",
+#  "placa": "",
+#  "anio": null
+#}'
+PUT http://localhost:5159/api/Mantenimiento/1
+Content-Type: application/json
+
+{
+  "id": 1,
+  "tipo": "",
+  "marcaModelo": "",
+  "placa": "",
+  "anio": null
+}
+
+###
+
+
+
+# curl http://localhost:5159/api/Mantenimiento/1 
+#  --request DELETE
+DELETE http://localhost:5159/api/Mantenimiento/1
+
+###

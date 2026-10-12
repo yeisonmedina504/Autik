@@ -11,8 +11,7 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, string connectionString) {
         
         // 1. Configuramos el acceso a PostgreSQL
-        services.AddDbContext<AutikDbContext>(options =>
-            options.UseNpgsql(connectionString));
+        services.AddDbContext<AutikDbContext>(options => options.UseNpgsql(connectionString));
 
         // 2. LA INYECCIÓN CLAVE (El contrato firmado por el Gerente):
         // "Cada vez que un Chef (Controlador) pida la Receta (IHabitoRepository), 

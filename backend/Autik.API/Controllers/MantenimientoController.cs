@@ -12,14 +12,18 @@ public class MantenimientoController: ControllerBase
 {
     private readonly IMantenimientoRepository _repository;
     private readonly IValidator<CreateMantenimientoRequestDto> _validator;
-    public  MantenimientoController(IMantenimientoRepository repository, IValidator<CreateMantenimientoRequestDto> validator)
+    private readonly IValidator<UpdateMantenimientoRequestDto> _updateValidator;
+    
+    
+    public  MantenimientoController(IMantenimientoRepository repository, IValidator<CreateMantenimientoRequestDto> validator, IValidator<UpdateMantenimientoRequestDto> updateValidator)
     {
         _repository = repository;
         _validator = validator;
+        _updateValidator = updateValidator;
     }
     
     
-
+    //controller @GetAllMantenimientos
     [HttpGet]
     public async Task<IActionResult> GetMantenimientos()
     {
@@ -38,7 +42,7 @@ public class MantenimientoController: ControllerBase
 
     
     
-    
+    //controller PostMantenimientos
     [HttpPost]
     public async Task<IActionResult> PostMantenimiento([FromBody] CreateMantenimientoRequestDto request)
     {
@@ -74,5 +78,80 @@ public class MantenimientoController: ControllerBase
 
         return CreatedAtAction(nameof(GetMantenimientos), new { id = response.Id }, response);
     }
+
+
+    //Controller @GetMantenimientoById
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetMantenimientoById(int id)
+    {
+        
+        var mantenimiento = await _repository.GetByIdAsync(id);
+        if (mantenimiento == null)
+            return NotFound();
+
+        var response = new MantenimientoResponseDto 
+        {
+            Id = mantenimiento.Id,
+            Tipo = mantenimiento.Tipo,
+            MarcaModelo = mantenimiento.MarcaModelo,
+            Placa = mantenimiento.Placa,
+            Anio = mantenimiento.Anio
+        };
+
+        return Ok(response);
+                
+    }
+    
+    
+    //controller PutMantenimientos
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> PutMantenimiento(int id, [FromBody] UpdateMantenimientoRequestDto request)
+    {
+        if (id != request.Id)
+            return BadRequest("El Id de la ruta no coincide con el Id del cuerpo.");
+
+        var validationResult = await _updateValidator.ValidateAsync(request);
+        if (!validationResult.IsValid)
+            return BadRequest(validationResult.Errors);
+
+        var existente = await _repository.GetByIdAsync(id);
+        if (existente == null)
+            return NotFound();
+
+        var entidad = new Mantenimiento
+        {
+            Id = request.Id,
+            Tipo = request.Tipo,
+            MarcaModelo = request.MarcaModelo,
+            Placa = request.Placa,
+            Anio = request.Anio
+        };
+
+        var actualizado = await _repository.UpdateAsync(entidad);
+
+        var response = new MantenimientoResponseDto
+        {
+            Id = actualizado.Id,
+            Tipo = actualizado.Tipo,
+            MarcaModelo = actualizado.MarcaModelo,
+            Placa = actualizado.Placa,
+            Anio = actualizado.Anio
+        };
+
+        return Ok(response);
+    }
+
+    //controller DeleteMantenimiento
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> DeleteMantenimiento(int id)
+    {
+        var eliminado = await _repository.DeleteAsync(id);
+        if (eliminado == null)
+            return NotFound();
+
+        return NoContent();  // 204: eliminado OK, sin cuerpo
+    }
+    
+    
     
 }
