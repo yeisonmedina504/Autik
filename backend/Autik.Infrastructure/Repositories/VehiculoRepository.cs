@@ -27,4 +27,19 @@ public class VehiculoRepository:  IVehiculoRepository
 
         return vehiculo;
     }
+
+    public Task<Vehiculo?> GetByIdAsync(int id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Vehiculo?> UpdateAsync(Vehiculo vehiculo)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Vehiculo?> DeleteAsync(int id)
+    {
+        throw new NotImplementedException();
+    }
 }

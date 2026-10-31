@@ -6,4 +6,10 @@ public interface ITallerRepository
 {
     public Task<IEnumerable<Taller>> GetAllAsync();
     public Task<Taller>AddAsync(Taller taller);
+    
+    public Task<Taller>GetByIdAsync(int id);
+    
+    public Task<Taller>UpdateAsync(Taller taller);
+    
+    public Task<Taller>DeleteAsync(int id);
 }

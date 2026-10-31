@@ -27,4 +27,19 @@ public class TalleresRepository: ITallerRepository
         await _context.SaveChangesAsync();
         return talleres;
     }
+
+    public Task<Taller> GetByIdAsync(int id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Taller> UpdateAsync(Taller taller)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Taller> DeleteAsync(int id)
+    {
+        throw new NotImplementedException();
+    }
 }
