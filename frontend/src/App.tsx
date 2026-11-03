@@ -1,9 +1,6 @@
-import MantenimientoCard, {
-  type MantenimientoProps,
-} from "./features/mantenimientos/components/MantenimientoCard";
-import { useState, useEffect } from "react";
-import { AppLayout } from "./layouts/AppLayout";
 // src/App.tsx
+import { AppLayout } from "./layouts/AppLayout";
+import { MantenimientoView } from "./features/mantenimientos/components/MantenimientoView";
 
 function App() {
   return (
