@@ -113,7 +113,7 @@ jobs:
           context: backend
           file: backend/Dockerfile
           push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-          tags: ghcr.io/${{ github.repository }}/backend:latest
+          tags: ghcr.io/yeisonmedina504/autik/backend:latest
 
       - name: Compilar imagen frontend
         uses: docker/build-push-action@v6
@@ -121,4 +121,4 @@ jobs:
           context: frontend
           file: frontend/Dockerfile
           push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-          tags: ghcr.io/${{ github.repository }}/frontend:latest
+          tags: ghcr.io/yeisonmedina504/autik/frontend:latest
