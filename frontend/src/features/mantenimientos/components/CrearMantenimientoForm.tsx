@@ -10,7 +10,7 @@ import {
 import {
   MantenimientoSchema,
   type MantenimientoSchemaType,
-} from "../schemas/Mantenimiento.schema";
+} from "../schemas/mantenimiento.schema";
 
 interface CrearMantenimientoFormProps {
   onMantenimientoCreado: (nuevoMantenimiento: Mantenimiento) => void;

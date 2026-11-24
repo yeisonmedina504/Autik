@@ -1,116 +1,105 @@
-# Ubicación en el repositorio: .github/workflows/ci.yml
-#   - Carpeta del frontend Node.js/React:  frontend/   (con Dockerfile)
-#   - Carpeta del backend .NET:            backend/    (con Dockerfile y proyecto de pruebas xUnit)
-#   - Rama principal:                      main
-
 name: CI Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
+  pull_request:
+    branches: [main]
 
-# Permisos mínimos; "packages: write" solo se usa para publicar en GHCR
 permissions:
   contents: read
   packages: write
 
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  # ---------------------------------------------------------------
-  # JOB 1: Linter y formato (ESLint)
-  # ---------------------------------------------------------------
   lint:
-    name: "1. Linter y formato (ESLint) 🧹"
-    runs-on: ubuntu-latest 🐧
+    name: 1. Linter y formato
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: frontend
     steps:
-      - name: "Descargar el código del repositorio 📥"
+      - name: Descargar código
         uses: actions/checkout@v4
 
-      - name: "Configurar Node.js 20 🚀"
+      - name: Configurar pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: npm
-          cache-dependency-path: frontend/package-lock.json
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
 
-      - name: "Instalar dependencias 📩"
-        run: npm ci
+      - name: Instalar dependencias
+        run: pnpm install --frozen-lockfile
 
-      - name: "Ejecutar ESLint 🧹"
-        run: npx eslint .
+      - name: Ejecutar ESLint
+        run: pnpm lint
 
-  # ---------------------------------------------------------------
-  # JOB 2a: Pruebas automatizadas del frontend (Vitest/Jest)
-  # ---------------------------------------------------------------
-  test-node:
-    name: "2a. Pruebas automatizadas Node (Vitest/Jest) 🧪"
+  test-frontend:
+    name: 2a. Pruebas frontend
     needs: lint
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: frontend
     steps:
-      - name: "Descargar el código del repositorio 📥"
+      - name: Descargar código
         uses: actions/checkout@v4
 
-      - name: "Configurar Node.js 20 🚀"
+      - name: Configurar pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: npm
-          cache-dependency-path: frontend/package-lock.json
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
 
-      - name: "Instalar dependencias 📩"
-        run: npm ci
+      - name: Instalar dependencias
+        run: pnpm install --frozen-lockfile
 
-      - name: "Ejecutar pruebas unitarias 🧪"
-        run: npm test
+      - name: Ejecutar pruebas Vitest
+        run: pnpm test --run
 
-  # ---------------------------------------------------------------
-  # JOB 2b: Pruebas automatizadas del backend (.NET / xUnit)
-  # ---------------------------------------------------------------
-  test-dotnet:
-    name: "2b. Pruebas automatizadas .NET (xUnit) 🧪"
+  test-backend:
+    name: 2b. Pruebas backend
+    needs: lint
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: backend
     steps:
-      - name: "Descargar el código del repositorio 📥"
+      - name: Descargar código
         uses: actions/checkout@v4
 
-      - name: "Configurar .NET 10 🚀"
+      - name: Configurar .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
 
-      - name: "Restaurar dependencias 📩"
-        run: dotnet restore backend/
+      - name: Ejecutar pruebas xUnit
+        run: dotnet test backend/Autik.Tests/Autik.Tests.csproj --configuration Release
 
-      - name: "Ejecutar pruebas unitarias 🧪"
-        run: dotnet test backend/ --no-restore --verbosity normal
-
-# ---------------------------------------------------------------
-  # JOB 3: Build automatizado de Docker
-  # "needs" hace que este job SOLO corra si ambas pruebas pasan.
-  # Si cualquiera falla, queda en estado "skipped": la imagen
-  # no se compila ni se publica.
-# ---------------------------------------------------------------
   build-docker:
-    name: "3. Build automatizado de Docker 🏗️"
-    needs: [ test-node, test-dotnet ]
+    name: 3. Build automatizado de Docker
+    needs: [test-frontend, test-backend]
     runs-on: ubuntu-latest
     steps:
-      - name: "Descargar el código del repositorio 📥"
+      - name: Descargar código
         uses: actions/checkout@v4
 
       - name: Configurar Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # Solo se inicia sesión en el registro cuando se hace push a main
-      - name: "Iniciar sesión en GitHub Container Registry 🔑"
+      - name: Iniciar sesión en GHCR
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: docker/login-action@v3
         with:
@@ -118,16 +107,18 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: "Compilar imagen del backend (publica solo en main) 🏗️"
+      - name: Compilar imagen backend
         uses: docker/build-push-action@v6
         with:
           context: backend
+          file: backend/Dockerfile
           push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
           tags: ghcr.io/${{ github.repository }}/backend:latest
 
-      - name: "Compilar imagen del frontend (publica solo en main) 🏗️"
+      - name: Compilar imagen frontend
         uses: docker/build-push-action@v6
         with:
           context: frontend
+          file: frontend/Dockerfile
           push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
           tags: ghcr.io/${{ github.repository }}/frontend:latest
