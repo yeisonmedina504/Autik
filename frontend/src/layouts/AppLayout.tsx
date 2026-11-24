@@ -52,9 +52,9 @@ export function AppLayout({ children }: AppLayoutProps) {
             </a>
             <a
               href="#"
-              className="flex items-center gap-3 px-3 py-2.5 text-slate-500 rounded-lg font-medium text-sm cursor-not-allowed"
+              classNam="flex items-center gap-3 px-3 py-2.5 text-slate-500 rounded-lg font-medium text-sm cursor-not-allowed"
             >
-              <span>📊</span> Progreso (Unidad 3)
+              <span📊</span> Progreso (Unidad 3)
             </a>
           </nav>
         </div>
