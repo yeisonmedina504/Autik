@@ -8,8 +8,6 @@ name: CI Pipeline
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 # Permisos mínimos; "packages: write" solo se usa para publicar en GHCR
 permissions:
