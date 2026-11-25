@@ -10,7 +10,7 @@ describe("MantenimientoSchema", () => {
   };
 
   it("acepta un año de cuatro dígitos", () => {
-    expect(MantenimientoSchema.safeParse(datosValidos).success).toBe(false);
+    expect(MantenimientoSchema.safeParse(datosValidos).success).toBe(true);
   });
 
   it("rechaza un año con letras", () => {
