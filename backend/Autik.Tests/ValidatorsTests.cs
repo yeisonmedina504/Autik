@@ -24,7 +24,7 @@ public class ValidatorsTests
         var validator = new CreateMantenimientoValidator();
         var result = validator.Validate(new CreateMantenimientoRequestDto
         {
-            MarcaModelo = "AB"
+            MarcaModelo = "Toyota Corolla"
         });
 
         Assert.True(result.IsValid);
